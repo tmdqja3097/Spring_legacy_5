@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iu.s5.member.MemberDAO">
+
+	<sql id="search">
+		like '%'||#{search}||'%'
+	</sql>
+
+	<!-- 전체 글의 갯수 -->
+	<select id="memberCount" resultType="java.lang.Long"
+		parameterType="com.iu.s5.member.memberPage.MemberPager">
+		select count(id) from member
+		<where>
+			<if test="kind == 'id'">
+				id
+				<include refid="search"></include>
+			</if>
+			<if test="kind == 'name'">
+				name
+				<include refid="search"></include>
+			</if>
+			<if test="kind == 'phone'">
+				phone
+				<include refid="search"></include>
+			</if>
+			<if test="kind == 'email'">
+				email
+				<include refid="search"></include>
+			</if>
+		</where>
+	</select>
+
+	<select resultType="com.iu.s5.member.MemberVO" id="memberList"
+		parameterType="com.iu.s5.member.memberPage.MemberPager">
+		select * from
+		(select N.*, rownum R from
+		(select * from member where
+		<choose>
+			<when test="kind =='id'">
+				id
+			</when>
+			<when test="kind=='name'">
+				name
+			</when>
+			<when test="kind=='phone'">
+				phone
+			</when>
+			<otherwise>
+				email
+			</otherwise>
+		</choose>
+		<include refid="search"></include>
+		) N)
+		where R
+		between #{startRow} and #{lastRow}
+	</select>
+	
+	<insert id="memberJoin"
+		parameterType="com.iu.s5.member.MemberVO">
+		insert into member values(#{name}, #{id}, #{pw}, #{age}, #{phone}, #{email})
+	</insert>
+
+
+</mapper>

@@ -1,4 +1,4 @@
-package com.iu.s5.notice;
+package com.iu.s5.qna;
 
 import java.util.List;
 import java.util.Map;
@@ -12,24 +12,24 @@ import com.iu.s5.board.BoardVO;
 import com.iu.s5.board.page.Pager;
 
 @Repository
-public class NoticeDAO implements BoardDAO{
+public class QnaDAO implements BoardDAO{
 	
 	@Autowired
 	private SqlSession sqlSession;
-	private final String NAMESPACE="com.iu.s5.notice.NoticeDAO.";
+	private final String NAMESPACE="com.iu.s5.qna.QnaDAO.";
 	
 	//boardCount
 	@Override
-	public long boardCount(Pager pager) throws Exception {
+	public long boardCount() throws Exception {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne(NAMESPACE+"boardCount",pager);
+		return sqlSession.selectOne(NAMESPACE+"boardCount");
 	}
 	
 	// noticeList
 	@Override
 	public List<BoardVO> boardList(Pager pager) throws Exception {
 		// TODO Auto-generated method stub
-		return sqlSession.selectList(NAMESPACE+"boardList",pager);
+		return sqlSession.selectList(NAMESPACE+"boardList",map);
 	}
 
 	// noticeSelect
@@ -59,7 +59,4 @@ public class NoticeDAO implements BoardDAO{
 		// TODO Auto-generated method stub
 		return sqlSession.update(NAMESPACE+"hitUpdate", num);
 	}
-	
-	
-	
 }
