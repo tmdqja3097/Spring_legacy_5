@@ -26,8 +26,8 @@
 						<option value="bt">Title</option>
 						<option value="bc">Contents</option>
 						<option value="bw">Writer</option>
-					</select>
-					 <input type="text" class="form-control" placeholder="Search" name="search">
+					</select> <input type="text" class="form-control" placeholder="Search"
+						name="search">
 					<div class="input-group-btn">
 						<button class="btn btn-default" type="submit">
 							<i class="glyphicon glyphicon-search"></i>
@@ -47,7 +47,11 @@
 				<c:forEach items="${list}" var="vo">
 					<tr>
 						<td>${vo.num}</td>
-						<td><a href="./${board}Select?num=${vo.num}">${vo.title}</a></td>
+						<td><c:catch>
+								<c:forEach begin="1" end="${vo.depth}">
+							--
+						</c:forEach>
+							</c:catch> <a href="./${board}Select?num=${vo.num}">${vo.title}</a></td>
 						<td>${vo.writer}</td>
 						<td>${vo.regdate}</td>
 						<td>${vo.hit}</td>
@@ -60,20 +64,36 @@
 			<div class="pageIndex">
 				<ul class="pagination">
 					<c:if test="${pager.curBlock gt 1}">
-						<li><a href="./${board}List?curPage=${pager.startNum-1}&kind=${pager.kind}&search=${pager.search}">[이전]</a></li>
+						<li><a
+							href="./${board}List?curPage=${pager.startNum-1}&kind=${pager.kind}&search=${pager.search}">[이전]</a></li>
 					</c:if>
 					<c:forEach begin="${pager.startNum}" end="${pager.lastNum}" var="i">
-						<li><a href="./${board}List?curPage=${i}&kind=${pager.kind}&search=${pager.search}">${i}</a></li>
+						<li><a
+							href="./${board}List?curPage=${i}&kind=${pager.kind}&search=${pager.search}">${i}</a></li>
 					</c:forEach>
 					<c:if test="${pager.curBlock lt pager.totalBlock}">
-						<li><a href="./${board}List?curPage=${pager.lastNum+1}&kind=${pager.kind}&search=${pager.search}">[다음]</a></li>
+						<li><a
+							href="./${board}List?curPage=${pager.lastNum+1}&kind=${pager.kind}&search=${pager.search}">[다음]</a></li>
 					</c:if>
 				</ul>
 			</div>
 
-			<div>
-				<a href="./${board}Write" class="btn btn-danger">Write</a>
-			</div>
+			<c:choose>
+				<c:when test="${board eq 'notice'}">
+					<c:if test="${member.id eq 'admin'}">
+						<div>
+							<a href="./${board}Write" class="btn btn-danger">Write</a>
+						</div>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${not empty member}">
+						<div>
+							<a href="./${board}Write" class="btn btn-danger">Write</a>
+						</div>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
 
 
 		</div>

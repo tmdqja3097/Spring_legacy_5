@@ -10,33 +10,27 @@ import org.springframework.stereotype.Service;
 import com.iu.s5.board.BoardService;
 import com.iu.s5.board.BoardVO;
 import com.iu.s5.notice.NoticeDAO;
+import com.iu.s5.util.Pager;
 
 @Service
 public class QnaService implements BoardService {
 	@Autowired
 	private QnaDAO qnaDAO;
-
+	
+	public int boardReply(BoardVO boardVO)throws Exception{
+		int result = qnaDAO.boardReplyUpdate(boardVO);
+		result = qnaDAO.boardReply(boardVO);
+		return result;
+	}
+	
+	
 	@Override
-	public List<BoardVO> boardList(int curPage) throws Exception {
-		int startRow = (curPage-1)*10-1;
-		int lastRow = curPage*10;
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("startRow", startRow);
-		map.put("lastRow", lastRow);
-		
-		
+	public List<BoardVO> boardList(Pager pager) throws Exception {
+		pager.makeRow();
 		//---------------------------------------------
-		// 1.총 글의 갯수
-		long totalCount = qnaDAO.boardCount();
-		System.out.println("Total count:"+ totalCount);
-		
-		// 2. 총 페이지의 갯수
-		long totalPage = totalCount/10;
-		if(totalCount % 10 != 0) {
-			totalPage++;
-		}
-		System.out.println(totalPage);
-		return qnaDAO.boardList(map);
+		long totalCount = qnaDAO.boardCount(pager);
+		pager.makePage(totalCount);
+		return qnaDAO.boardList(pager);				
 	}
 
 	@Override

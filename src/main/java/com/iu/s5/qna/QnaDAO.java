@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.iu.s5.board.BoardDAO;
 import com.iu.s5.board.BoardVO;
-import com.iu.s5.board.page.Pager;
+import com.iu.s5.util.Pager;
 
 @Repository
 public class QnaDAO implements BoardDAO{
@@ -18,18 +18,26 @@ public class QnaDAO implements BoardDAO{
 	private SqlSession sqlSession;
 	private final String NAMESPACE="com.iu.s5.qna.QnaDAO.";
 	
+	public int boardReplyUpdate(BoardVO boardVO)throws Exception{
+		return sqlSession.update(NAMESPACE+"boardReplyUpdate",boardVO);
+	}
+	
+	public int boardReply(BoardVO boardVO)throws Exception{
+		return sqlSession.update(NAMESPACE+"boardReply",boardVO);
+	}
+	
 	//boardCount
 	@Override
-	public long boardCount() throws Exception {
+	public long boardCount(Pager pager) throws Exception {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne(NAMESPACE+"boardCount");
+		return sqlSession.selectOne(NAMESPACE+"boardCount",pager);
 	}
 	
 	// noticeList
 	@Override
 	public List<BoardVO> boardList(Pager pager) throws Exception {
 		// TODO Auto-generated method stub
-		return sqlSession.selectList(NAMESPACE+"boardList",map);
+		return sqlSession.selectList(NAMESPACE+"boardList",pager);
 	}
 
 	// noticeSelect

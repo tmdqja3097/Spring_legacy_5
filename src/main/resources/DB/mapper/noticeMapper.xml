@@ -10,7 +10,7 @@
 	</sql>
 
 	<!-- 전체 글의 갯수 -->
-	<select id="boardCount" resultType="java.lang.Long" parameterType="com.iu.s5.board.page.Pager">
+	<select id="boardCount" resultType="Long" parameterType="Pager">
 		select count(num) from notice 
 		<where>
 			<if test="kind == 'bt'">
@@ -25,8 +25,8 @@
 		</where>	
 	</select>
 
-	<select resultType="com.iu.s5.notice.NoticeVO" id="boardList"
-		parameterType="com.iu.s5.board.page.Pager">
+	<select resultType="NoticeVO" id="boardList"
+		parameterType="Pager">
 		select * from
 		(select N.*, rownum R from
 		(select * from notice where
@@ -46,31 +46,31 @@
 		between #{startRow} and #{lastRow}
 	</select>
 
-	<select resultType="com.iu.s5.notice.NoticeVO" id="boardSelect"
-		parameterType="java.lang.Long">
+	<select resultType="NoticeVO" id="boardSelect"
+		parameterType="Long">
 		select * from notice where num=#{num}
 	</select>
 
 
 	<insert id="boardWrite"
-		parameterType="com.iu.s5.notice.NoticeVO">
+		parameterType="NoticeVO">
 		insert into notice values(board_seq.nextval, #{title},
 		#{writer},
 		#{contents}, sysdate, 0)
 	</insert>
 
-	<delete id="boardDelete" parameterType="java.lang.Long">
+	<delete id="boardDelete" parameterType="Long">
 		delete notice where num
 		=#{num}
 	</delete>
 
 	<update id="boardUpdate"
-		parameterType="com.iu.s5.notice.NoticeVO">
+		parameterType="NoticeVO">
 		update notice set title=#{title}, contents=#{contents}
 		where num=#{num}
 	</update>
 
-	<update id="hitUpdate" parameterType="java.lang.Long">
+	<update id="hitUpdate" parameterType="Long">
 		update notice set hit
 		=hit+1 where num=#{num}
 	</update>

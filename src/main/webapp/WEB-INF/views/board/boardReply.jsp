@@ -11,10 +11,11 @@
 <body>
 <c:import url="../template/header.jsp"></c:import>
 	<div class="container">
-		<h1>${board} Write Form</h1>
+		<h1>${board} Reply Form</h1>
 		
 		
-		<form action="./${board}Write" id="frm" method="post">
+		<form action="./${board}Reply" id="frm" method="post">
+		  <input type="hidden" name="num" value=${num}>
 		  <div class="form-group">
 		    <label for="title">Title:</label>
 		    <input type="text" class="form-control" id="title" name="title">

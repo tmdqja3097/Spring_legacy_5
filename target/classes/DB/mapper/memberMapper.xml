@@ -10,8 +10,8 @@
 	</sql>
 
 	<!-- 전체 글의 갯수 -->
-	<select id="memberCount" resultType="java.lang.Long"
-		parameterType="com.iu.s5.member.memberPage.MemberPager">
+	<select id="memberCount" resultType="Long"
+		parameterType="MemberPager">
 		select count(id) from member
 		<where>
 			<if test="kind == 'id'">
@@ -33,8 +33,8 @@
 		</where>
 	</select>
 
-	<select resultType="com.iu.s5.member.MemberVO" id="memberList"
-		parameterType="com.iu.s5.member.memberPage.MemberPager">
+	<select resultType="MemberVO" id="memberList"
+		parameterType="MemberPager">
 		select * from
 		(select N.*, rownum R from
 		(select * from member where
@@ -59,9 +59,18 @@
 	</select>
 	
 	<insert id="memberJoin"
-		parameterType="com.iu.s5.member.MemberVO">
+		parameterType="MemberVO">
 		insert into member values(#{name}, #{id}, #{pw}, #{age}, #{phone}, #{email})
 	</insert>
+	
+	<select id="memberLogin" parameterType="MemberVO" resultType="MemberVO">select * from member where id=#{id} and pw=#{pw} </select>
+
+<insert id="memberJoin" parameterType="MemberVO">insert into member values(#{id}, #{pw}, #{name}, #{email}, #{phone}, #{age}) </insert>
+
+<update id="memberUpdate" parameterType="MemberVO">update member set name=#{name}, email=#{email}, phone=#{phone}, age=#{age} where id=#{id} </update>
+
+<delete id="memberDelete" parameterType="MemberVO">delete member where id=#{id} </delete>
+	
 
 
 </mapper>

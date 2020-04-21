@@ -1,4 +1,4 @@
-package com.iu.s5.member.memberPage;
+package com.iu.s5.util;
 
 public class MemberPager {
 	private Long curPage;

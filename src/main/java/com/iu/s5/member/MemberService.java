@@ -6,26 +6,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.iu.s5.board.BoardVO;
-import com.iu.s5.board.page.Pager;
-import com.iu.s5.member.memberPage.MemberPager;
 import com.iu.s5.notice.NoticeDAO;
+import com.iu.s5.util.MemberPager;
+import com.iu.s5.util.Pager;
 
 @Service
 public class MemberService {
-	
 	@Autowired
 	private MemberDAO memberDAO;
+	
+	public List<MemberVO> memberList(MemberPager memberPager)throws Exception{
+		memberPager.makeRow();
+		long totalCount = memberDAO.memberCount(memberPager);
+		memberPager.makePage(totalCount);
+		return memberDAO.memberList(memberPager);
+	}
 
-	public List<MemberVO> memberList(MemberPager mp) throws Exception {
-		mp.makeRow();
-		//---------------------------------------------
-		long totalCount = memberDAO.memberCount(mp);
-		mp.makePage(totalCount);
-		return memberDAO.memberList(mp);			
+	public int memberUpdate(MemberVO memberVO)throws Exception{
+		return memberDAO.memberUpdate(memberVO);
 	}
 	
-	public int memberJoin(MemberVO memberVO) throws Exception {
-		// TODO Auto-generated method stub
+	public int memberDelete(MemberVO memberVO) throws Exception{
+		return memberDAO.memberDelete(memberVO);
+	}
+	
+	public MemberVO memberLogin(MemberVO memberDTO)throws Exception{
+		return memberDAO.memberLogin(memberDTO);
+	}
+	
+	public int memberJoin(MemberVO memberVO)throws Exception{
 		return memberDAO.memberJoin(memberVO);
 	}
 

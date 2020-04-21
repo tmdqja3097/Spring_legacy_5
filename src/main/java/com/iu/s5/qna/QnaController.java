@@ -1,11 +1,16 @@
 package com.iu.s5.qna;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.iu.s5.board.BoardVO;
 import com.iu.s5.notice.NoticeService;
 import com.iu.s5.notice.NoticeVO;
+import com.iu.s5.util.Pager;
 
 @Controller
 @RequestMapping("/qna/**")
@@ -26,25 +32,25 @@ public class QnaController {
 		return "qna";
 	}
 	
-	@RequestMapping(value = "qnaWrite", method = RequestMethod.GET)
+	@GetMapping("qnaWrite")
 	public String boardWrite()throws Exception{
 		return "board/boardWrite";
 	}
 	
-	@RequestMapping(value = "qnaWrite", method = RequestMethod.POST)
+	@PostMapping("qnaWrite")
 	public ModelAndView boardWrite(QnaVO qnaVO, ModelAndView mv)throws Exception{
 		int result = qnaService.boardWrite(qnaVO);
 		if(result>0) {
-			mv.setViewName("redirect:./qnaList");
+			mv.addObject("result", "Write Success");
 		}else {
-			mv.addObject("result", "Write Fail");
-			mv.addObject("path", "./qnaList");
-			mv.setViewName("common/result");
+			mv.addObject("result", "Write Fail");	
 		}
+		mv.addObject("path", "./qnaList");
+		mv.setViewName("common/result");
 		return mv;
 	}
 	
-	@RequestMapping(value="qnaSelect" , method = RequestMethod.GET)
+	@GetMapping("qnaSelect")
 	public ModelAndView boardSelect(long num)throws Exception{
 		ModelAndView mv = new ModelAndView();
 		BoardVO boardVO = qnaService.boardSelect(num);
@@ -54,16 +60,17 @@ public class QnaController {
 	}
 	
 	
-	@RequestMapping(value = "qnaList", method = RequestMethod.GET)
-	public ModelAndView boardList(@RequestParam(defaultValue = "1") int curPage, ModelAndView mv)throws Exception{
+	@GetMapping("qnaList")
+	public ModelAndView boardList(Pager pager, ModelAndView mv)throws Exception{
 		
-		List<BoardVO> ar = qnaService.boardList(curPage);
+		List<BoardVO> ar = qnaService.boardList(pager);
 		mv.addObject("list", ar);
+		mv.addObject("pager", pager);
 		mv.setViewName("board/boardList");
 		return mv;
 	}
 	
-	@RequestMapping(value = "qnaDelete", method = RequestMethod.GET)
+	@GetMapping("qnaDelete")
 	public ModelAndView boardDelete(long num) throws Exception{
 		ModelAndView mv = new ModelAndView();
 		int result = qnaService.boardDelete(num);
@@ -78,14 +85,14 @@ public class QnaController {
 	 
 	}
 	
-	@RequestMapping(value = "qnaUpdate", method = RequestMethod.GET)
+	@GetMapping("qnaUpdate")
 	public String boardUpdate(long num, Model model)throws Exception{
 		BoardVO boardVO = qnaService.boardSelect(num);
 		model.addAttribute("vo", boardVO);
 		return "board/boardUpdate";	
 	}
 	
-	@RequestMapping(value = "qnaUpdate", method = RequestMethod.POST)
+	@PostMapping("qnaUpdate")
 	public String boardUpdate(QnaVO qnaVO)throws Exception{
 		int result = qnaService.boardUpdate(qnaVO);
 		String path = "";
@@ -96,6 +103,26 @@ public class QnaController {
 			path="redirect:./qnaSelect?num="+qnaVO.getNum();
 		}
 		return path;
+	}
+	
+	@GetMapping("qnaReply")
+	public ModelAndView boardReply(ModelAndView mv,long num)throws Exception{
+		mv.addObject("num", num);
+		mv.setViewName("board/boardReply");
+		return mv;
+	}
+	
+	@PostMapping("qnaReply")
+	public ModelAndView boardReply(ModelAndView mv, QnaVO qnaVO)throws Exception{
+		int result = qnaService.boardReply(qnaVO);
+		if(result>0) {
+			mv.setViewName("redirect:./qnaList");
+		}else {
+			mv.addObject("result", "Reply Write Fail");
+			mv.addObject("path", "./qnaList");
+			mv.setViewName("common/result");
+		}
+		return mv;
 	}
 	
 }
